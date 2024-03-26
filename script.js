@@ -2,9 +2,9 @@ const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
 const playerImg = new Image();
-playerImg.src = "images/mobil-user.png"; // Gambar karakter mobil pengguna
+playerImg.src = "images/mobil-user.png";
+
 const obstacleImgs = [
-  // Array untuk menyimpan gambar mobil penghalang
   "images/mobil-1.png",
   "images/mobil-2.png",
   "images/mobil-3.png",
@@ -18,7 +18,7 @@ const player = {
   height: 100,
   speed: 5,
   dx: 0,
-  dy: 0, // Tambahkan dy untuk pergerakan vertikal
+  dy: 0,
 };
 
 const obstacles = [];
@@ -56,10 +56,13 @@ function drawObstacles() {
 }
 
 function movePlayer() {
-  player.x += player.dx;
-  player.y += player.dy; // Tambahkan pergerakan vertikal
+  const nextX = player.x + player.dx;
+  if (nextX >= 0 && nextX <= canvas.width - player.width) {
+    player.x = nextX;
+  }
 
-  // Batasi pemain agar tidak keluar dari batas atas dan bawah layar
+  player.y += player.dy;
+
   if (player.y < 0) {
     player.y = 0;
   } else if (player.y + player.height > canvas.height) {
@@ -120,7 +123,7 @@ function resetGame() {
   player.x = canvas.width / 2 - 25;
   player.y = canvas.height - 100;
   player.dx = 0;
-  player.dy = 0; // Reset pergerakan vertikal
+  player.dy = 0;
   score = 0;
   gameOver = false;
   gamePaused = false;
@@ -140,17 +143,15 @@ function resetGame() {
 }
 
 function drawStartScreen() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height); // Bersihkan canvas
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
   if (score && gamePaused) {
-    // Tambahkan pengecekan apakah game sudah dimulai sebelumnya atau belum
     ctx.fillStyle = "white";
     ctx.font = "24px Arial";
     ctx.textAlign = "center";
     ctx.fillText(
       "Tekan spasi pada keyboard untuk memulai game",
       canvas.width / 2,
-      canvas.height / 2,
-      2
+      canvas.height / 2
     );
   }
 }
@@ -284,10 +285,8 @@ document.addEventListener("keydown", function (event) {
     } else if (event.key === "ArrowRight") {
       player.dx = player.speed;
     } else if (event.key === "ArrowUp") {
-      // Tangani tombol panah ke atas
       player.dy = -player.speed;
     } else if (event.key === "ArrowDown") {
-      // Tangani tombol panah ke bawah
       player.dy = player.speed;
     }
   }
