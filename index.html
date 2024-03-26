@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Menghindar Rintangan dengan Canvas</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="aturLevel">
+        <div id="levelSelection">
+            <h2>Pilih Level:</h2>
+            <button id="easyBtn">Easy</button>
+            <button id="mediumBtn">Medium</button>
+            <button id="hardBtn">Hard</button>
+        </div>
+        <button id="restartBtn">Ganti Level</button>
+    </div>
+    <audio id="scoreAudio" src="audio/score.mp3"></audio>
+    <audio id="gameOverAudio" src="audio/game-over.mp3"></audio>
+    <audio id="gameBackSound" src="audio/game-backsound.mp3" loop></audio>
+
+    <canvas id="gameCanvas" width="768" height="700"></canvas>
+    <script src="script.js"></script>
+</body>
+
+</html>
