@@ -1,11 +1,21 @@
+body {
+    background-image: url('images/background.jpg');
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+    height: 100vh;
+    margin: 0;
+    overflow: hidden;
+}
+
 canvas {
     border: 1px solid black;
     display: block;
     margin: 0 auto;
     border-radius: 10px;
-    border: 1px solid #868b24;
     background-image: url(images/jalan.jpg);
     background-size: cover; 
+    box-shadow: 0 0 10px 5px rgb(174, 84, 145);
 }
 
 .aturLevel {
@@ -23,7 +33,7 @@ canvas {
     margin: 10px;
     font-size: 16px;
     cursor: pointer;
-    background: #868b24;
+    background: #1db24a;
 }
 
 #easyBtn,
@@ -36,13 +46,13 @@ canvas {
 }
 
 #easyBtn {
-    background: #4caf50;
+    background: #9BAFC7;
 }
 
 #mediumBtn {
-    background: #ff9800;
+    background: #FFAB02;
 }
 
 #hardBtn {
-    background: #f44336;
+    background: #804767;
 }
