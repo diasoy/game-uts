@@ -13,27 +13,23 @@ const obstacleImgs = [
 ];
 
 const player = {
-  x: canvas.width / 2 - 25, //koordinat posisi pemain pada kanvas. x diatur ke tengah kanvas dikurangi 25
-  y: canvas.height - 100, //koordinat posisi pemain pada kanvas. y diatur ke bagian bawah kanvas dikurangi 100
   width: 50, // ukuran pemain lebar 50
   height: 100, // ukuran pemain tinggi 100
   speed: 5, //kecepatan pemain
-  dx: 0, // perubahan dalam posisi x
-  dy: 0, // perubahan dalam posisi y
 };
 
 const obstacles = []; // array yang berisi rintangan
 const obstacleWidth = 50; // lebar rintangan
 const obstacleHeight = 100; // tinggi rintangan
-let obstacleSpeed = 3; // kecepatan rintangan
-const obstacleGap = 200; // jarak antara rintangan
+let obstacleSpeed; // kecepatan rintangan
+const obstacleGap = 50; // jarak antara rintangan
 let lastObstacleY = 0; // posisi y rintangan terakhir
 
-let score = 0; // skor pemain
+let score; // skor pemain
 let highScoreEasy = localStorage.getItem("highScoreEasy") || 0; // skor tertinggi level mudah
 let highScoreMedium = localStorage.getItem("highScoreMedium") || 0; // skor tertinggi level sedang
 let highScoreHard = localStorage.getItem("highScoreHard") || 0; // skor tertinggi level sulit
-let levelNow = "Easy"; // level permainan
+let levelNow; // level permainan
 let gameOver = false; // status permainan berakhir
 let gamePaused = true; // status permainan dijeda
 let requestId; // id permintaan animasi frame
@@ -82,7 +78,7 @@ function moveObstacles() {
   if (!gameOver && !gamePaused) {
     //memeriksa apakah permainan sudah berakhir atau dijeda.
     obstacles.forEach((obstacle) => {
-      //melakukan iterasi atau pengulangan pada setiap elemen dalam array obstacles
+      //melakukan pengulangan pada setiap elemen dalam array obstacles
       obstacle.y += obstacleSpeed; //memindahkan rintangan secara vertikal berdasarkan kecepatan rintangan.
       if (obstacle.y > canvas.height) {
         //memeriksa apakah rintangan melewati batas bawah kanvas. Jika ya, kode ini akan dijalankan.
@@ -102,10 +98,13 @@ function moveObstacles() {
         document.getElementById("restartBtn").style.display = "inline"; // menampilkan tombol restart.
         document.getElementById("gameOverAudio").play(); // memainkan efek suara game over.
         document.getElementById("gameBackSound").pause(); // menghentikan efek suara latar belakang.
-        alert(
-          // menampilkan pesan peringatan dengan skor pemain dan skor tertinggi.
-          "Game Over! Your score: " + score + "\nHigh Score: " + getHighScore()
-        );
+        Swal.fire({
+          title: "Game Over!",
+          text: `Your score: ${score} \n High Score: ${getHighScore()}`,
+          icon: "error",
+          confirmButtonText: "Play Again",
+          allowOutsideClick: false, // Mencegah menutup alert di luar kotak dialog
+        });
       }
     });
   }
@@ -138,8 +137,8 @@ function drawScore() {
 
 function resetGame() {
   // digunakan untuk mengatur ulang permainan.
-  player.x = canvas.width / 2 - 25; // mengatur posisi x pemain ke tengah kanvas dikurangi 25.
-  player.y = canvas.height - 100; // mengatur posisi y pemain ke bagian bawah kanvas dikurangi 100.
+  player.x = canvas.width / 2; // mengatur posisi x pemain ke tengah kanvas dikurangi 25.
+  player.y = canvas.height; // mengatur posisi y pemain ke bagian bawah kanvas dikurangi 100.
   player.dx = 0; // mengatur perubahan posisi x pemain ke 0.
   player.dy = 0; // mengatur perubahan posisi y pemain ke 0.
   score = 0; // mengatur skor pemain ke 0.
@@ -164,7 +163,7 @@ function resetGame() {
 function drawStartScreen() {
   // digunakan untuk menggambar layar awal permainan.
   ctx.clearRect(0, 0, canvas.width, canvas.height); // membersihkan kanvas.
-  if (score && gamePaused) {
+  if (score >= 0 && gamePaused) {
     // memeriksa apakah skor pemain ada dan permainan dijeda.
     ctx.fillStyle = "white"; // mengatur warna isi teks ke putih.
     ctx.font = "24px Arial"; // mengatur ukuran dan jenis font teks.
@@ -328,31 +327,41 @@ document.addEventListener("keydown", function (event) {
 
   if (!gameOver && !gamePaused) {
     // memeriksa apakah permainan belum berakhir dan tidak dijeda.
-    if (event.key === "ArrowLeft") { // memeriksa apakah tombol panah kiri ditekan.
+    if (event.key === "ArrowLeft") {
+      // memeriksa apakah tombol panah kiri ditekan.
       player.dx = -player.speed; // mengatur perubahan posisi x pemain ke kecepatan pemain.
-    } else if (event.key === "ArrowRight") { // memeriksa apakah tombol panah kanan ditekan.
+    } else if (event.key === "ArrowRight") {
+      // memeriksa apakah tombol panah kanan ditekan.
       player.dx = player.speed; // mengatur perubahan posisi x pemain ke kecepatan pemain.
-    } else if (event.key === "ArrowUp") { // memeriksa apakah tombol panah atas ditekan.
+    } else if (event.key === "ArrowUp") {
+      // memeriksa apakah tombol panah atas ditekan.
       player.dy = -player.speed; // mengatur perubahan posisi y pemain ke kecepatan pemain.
-    } else if (event.key === "ArrowDown") { // memeriksa apakah tombol panah bawah ditekan.
+    } else if (event.key === "ArrowDown") {
+      // memeriksa apakah tombol panah bawah ditekan.
       player.dy = player.speed; // mengatur perubahan posisi y pemain ke kecepatan pemain.
     }
   }
 });
 
-document.addEventListener("keyup", function (event) { // menangani event keyup.
-  if (!gameOver && !gamePaused) { // memeriksa apakah permainan belum berakhir dan tidak dijeda.
-    if (event.key === "ArrowLeft" || event.key === "ArrowRight") { // memeriksa apakah tombol panah kiri atau kanan dilepas.
+document.addEventListener("keyup", function (event) {
+  // menangani event keyup.
+  if (!gameOver && !gamePaused) {
+    // memeriksa apakah permainan belum berakhir dan tidak dijeda.
+    if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
+      // memeriksa apakah tombol panah kiri atau kanan dilepas.
       player.dx = 0; // mengatur perubahan posisi x pemain ke 0.
-    } else if (event.key === "ArrowUp" || event.key === "ArrowDown") { // memeriksa apakah tombol panah atas atau bawah dilepas.
+    } else if (event.key === "ArrowUp" || event.key === "ArrowDown") {
+      // memeriksa apakah tombol panah atas atau bawah dilepas.
       player.dy = 0; // mengatur perubahan posisi y pemain ke 0.
     }
   }
 });
 
 // Generate obstacles
-for (let i = 0; i < 10; i++) { // melakukan iterasi atau pengulangan sebanyak 10 kali.
-  obstacles.push({ // menambahkan objek rintangan ke array obstacles.
+for (let i = 0; i < 10; i++) {
+  // melakukan iterasi atau pengulangan sebanyak 10 kali.
+  obstacles.push({
+    // menambahkan objek rintangan ke array obstacles.
     x: Math.random() * (canvas.width - obstacleWidth), // posisi x rintangan diatur ke posisi acak di kanvas.
     y: -(obstacleHeight + obstacleGap) * i, // posisi y rintangan diatur ke atas kanvas.
     type: Math.floor(Math.random() * 4) + 1, // tipe rintangan diatur ke angka acak antara 1 dan 4.

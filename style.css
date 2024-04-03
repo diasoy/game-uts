@@ -9,13 +9,14 @@ body {
 }
 
 canvas {
+    display :flex;
     border: 1px solid black;
     display: block;
     margin: 0 auto;
     border-radius: 10px;
     background-image: url(images/jalan.jpg);
     background-size: cover; 
-    box-shadow: 0 0 10px 5px rgb(174, 84, 145);
+    box-shadow: 0 0 20px 10px rgb(174, 84, 145);
 }
 
 .aturLevel {
